@@ -14,7 +14,7 @@ source devel/setup.bash
 ```
 
 ## Usage
-Within the [move\_base](https://wiki.ros.org/move_base) node in your launch file, set the `base_global_planner` parameter to `rrt_planner/RRTPlannerROS` and load the required parameters.
+Within the [move_base](https://wiki.ros.org/move_base) node in your launch file, set the `base_global_planner` parameter to `rrt_planner/RRTPlannerROS` and load the required parameters.
 ```xml
 <param name="base_global_planner" value="rrt_planner/RRTPlannerROS"/>
 <rosparam file="$(find rrt_planner)/config/rrt_planner.yaml" command="load" />
@@ -42,7 +42,7 @@ None.
 `~/move_base/RRTPlannerROS/goal_tolerance` (`double`, default: 0.20)
 - Goal tolerance (in meters) to be achieved by the global planner.
 
-``~/move_base/RRTPlannerROS/rrt/step` (`double`, default: 0.20)
+`~/move_base/RRTPlannerROS/rrt/step` (`double`, default: 0.20)
 - Distance (in meters) to extend tree per iteration.
 
 `~/move_base/RRTPlannerROS/rrt/min_num_nodes` (`int`, default: 200)
