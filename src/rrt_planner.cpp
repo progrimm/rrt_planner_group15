@@ -1,5 +1,6 @@
 
 #include <rrt_planner/rrt_planner.h>
+#include <limits>
 
 namespace rrt_planner {
 
@@ -12,7 +13,6 @@ namespace rrt_planner {
 
         random_double_x.setRange(-map_width_, map_width_);
         random_double_y.setRange(-map_height_, map_height_);
-3
         nodes_.reserve(params_.max_num_nodes);
     }
 
@@ -53,26 +53,21 @@ namespace rrt_planner {
 
     int RRTPlanner::getNearestNodeId(const double *point) {
 
-        min_dist_node = 0;
-        min_dist = std::numeric_limits<double>::max();
-        for (int i = nodes_.size() - 1; i >= 0; i--) {
+        int min_dist_node = 0;
+        double min_dist = std::numeric_limits<double>::max();
+        double dist = 0.0;
+
+        for (int i = static_cast<int>(nodes_.size()) - 1; i >= 0; --i) {
             dist = computeDistance(nodes_[i].pos, point);
             if (dist < min_dist) {
                 min_dist = dist;
                 min_dist_node = i;
             }
-
         }
 
         return min_dist_node;
 
     }
-
-     double pos[2]; // 2D coordinates (x, y)
-        int node_id;
-        int parent_id;
-        float cost_to_go{0.0};
-
 
     void RRTPlanner::createNewNode(const double* pos, int parent_node_id) {
 
