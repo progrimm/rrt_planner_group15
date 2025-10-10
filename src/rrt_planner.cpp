@@ -93,7 +93,6 @@ namespace rrt_planner {
 
     double* RRTPlanner::extendTree(const double* point_nearest, const double* point_rand) {
 
-        /** 
         double dir_x = point_rand[0] - point_nearest[0];
         double dir_y = point_rand[1] - point_nearest[1];
         double dist = computeDistance(point_nearest, point_rand);
@@ -102,12 +101,9 @@ namespace rrt_planner {
         dir_x /= dist;
         dir_y /= dist;
 
-        double step = std::min(step_size_, dist);
+        double step = std::min(0.1, dist);
         candidate_point_[0] = point_nearest[0] + step * dir_x;
         candidate_point_[1] = point_nearest[1] + step * dir_y;
-        */
-        candidate_point_[0] = point_rand[0];
-        candidate_point_[1] = point_rand[1];
 
         return candidate_point_;
     }
