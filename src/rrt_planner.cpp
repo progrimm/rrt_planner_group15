@@ -53,10 +53,18 @@ namespace rrt_planner {
 
     int RRTPlanner::getNearestNodeId(const double *point) {
 
-        /**************************
-         * Implement your code here
-         **************************/
+        min_dist_node = 0;
+        min_dist = std::numeric_limits<double>::max();
+        for (int i = nodes_.size() - 1; i >= 0; i--) {
+            dist = computeDistance(nodes_[i].pos, point);
+            if (dist < min_dist) {
+                min_dist = dist;
+                min_dist_node = i;
+            }
 
+        }
+
+        return min_dist_node;
 
     }
 
