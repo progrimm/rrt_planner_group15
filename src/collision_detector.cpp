@@ -19,7 +19,10 @@ namespace rrt_planner {
         if (!costmap_->worldToMap(world_pos[0], world_pos[1], mx, my)) {
             return false; // outside the map
         }
-        return (costmap_->getCost(mx, my) == 0);
+        unsigned char cost = costmap_->getCost(mx, my);
+        // Consider free if cost is less than inscribed inflated obstacle (253)
+        // This allows navigation through cells with some cost but not lethal obstacles
+        return (cost < costmap_2d::INSCRIBED_INFLATED_OBSTACLE);
 
     }
 
