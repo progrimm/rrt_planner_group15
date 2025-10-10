@@ -12,7 +12,7 @@ namespace rrt_planner {
 
         random_double_x.setRange(-map_width_, map_width_);
         random_double_y.setRange(-map_height_, map_height_);
-
+3
         nodes_.reserve(params_.max_num_nodes);
     }
 
@@ -57,6 +57,7 @@ namespace rrt_planner {
          * Implement your code here
          **************************/
 
+
     }
 
     void RRTPlanner::createNewNode(const double* pos, int parent_node_id) {
@@ -89,8 +90,17 @@ namespace rrt_planner {
          * Implement your code here
          **************************/
 
-        candidate_point_[0] = // ... ;
-        candidate_point_[1] = // ... ;
+        double dir_x = point_rand[0] - point_nearest[0];
+        double dir_y = point_rand[1] - point_nearest[1];
+        double dist = computeDistance(point_nearest, point_rand);
+
+        if (dist < 1e-6) dist = 1e-6; // ikke dele på null
+        dir_x /= dist;
+        dir_y /= dist;
+
+        double step = std::min(step_size_, dist);
+        candidate_point_[0] = point_nearest[0] + step * dir_x;
+        candidate_point_[1] = point_nearest[1] + step * dir_y;
 
         return candidate_point_;
     }
