@@ -24,9 +24,11 @@ namespace rrt_planner {
     }
 
     bool CollisionDetector::obstacleBetween(const double* point_a, const double* point_b) {
+        if (!inFreeSpace(point_a) || !inFreeSpace(point_b)) {
+            return true; // treat points outside map as obstacles
+        }
 
         double dist = computeDistance(point_a, point_b);
-
         if (dist < resolution_) {
             return !inFreeSpace(point_b);
         }
@@ -34,7 +36,7 @@ namespace rrt_planner {
         int num_steps = static_cast<int>(std::floor(dist / resolution_));
         double point_i[2];
 
-        for (int n = 1; n <= num_steps; ++n) {
+        for (int n = 1; n < num_steps; ++n) { // no need to check point_b again
             point_i[0] = point_a[0] + n * (point_b[0] - point_a[0]) / num_steps;
             point_i[1] = point_a[1] + n * (point_b[1] - point_a[1]) / num_steps;
             if (!inFreeSpace(point_i)) {
@@ -42,7 +44,7 @@ namespace rrt_planner {
             }
         }
         return false;
-
     }
+
 
 };
