@@ -19,6 +19,12 @@ namespace rrt_planner {
          * Implement your code here
          **************************/
 
+         if (costmap_->getCost(world_pos[0], world_pos[1]) == costmap_2d::FREE_SPACE) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     bool CollisionDetector::obstacleBetween(const double* point_a, const double* point_b) {

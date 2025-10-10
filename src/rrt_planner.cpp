@@ -77,9 +77,9 @@ namespace rrt_planner {
          * Implement your code here
          **************************/
 
-        rand_point_[0] = // ... ;
-        rand_point_[1] = // ... ;
-
+        rand_point_[0] = random_double_x.generate();
+        rand_point_[1] = random_double_y.generate();
+        
         return rand_point_;
     }
 
