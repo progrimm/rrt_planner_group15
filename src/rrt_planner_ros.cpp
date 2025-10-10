@@ -46,7 +46,7 @@ namespace rrt_planner {
         else {
 
             ROS_WARN("This planner has already been initialized, you can't call it twice, doing nothing");
-        }    
+        }
     }
     
     void RRTPlannerROS::initialize(std::string name, costmap_2d::Costmap2DROS *costmap) {
