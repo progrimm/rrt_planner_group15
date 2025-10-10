@@ -60,13 +60,20 @@ namespace rrt_planner {
 
     }
 
+     double pos[2]; // 2D coordinates (x, y)
+        int node_id;
+        int parent_id;
+        float cost_to_go{0.0};
+
+
     void RRTPlanner::createNewNode(const double* pos, int parent_node_id) {
 
         Node new_node;
 
-        /**************************
-         * Implement your code here
-         **************************/
+        new_node.pos[0] = pos[0];
+        new_node.pos[1] = pos[1];
+        new_node.node_id = nodes_.size();
+        new_node.parent_id = parent_node_id;
 
         nodes_.emplace_back(new_node);
         
