@@ -15,9 +15,6 @@ namespace rrt_planner {
 
     bool CollisionDetector::inFreeSpace(const double* world_pos) {
 
-        /**************************
-         * Implement your code here
-         **************************/
 
          if (costmap_->getCost(world_pos[0], world_pos[1]) == costmap_2d::FREE_SPACE) {
             return true;
