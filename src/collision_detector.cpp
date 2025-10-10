@@ -22,10 +22,6 @@ namespace rrt_planner {
         return (costmap_->getCost(mx, my) == 0);
 
     }
-    double CollisionDetector::computeDistance(const double* a, const double* b) {
-        return std::hypot(b[0] - a[0], b[1] - a[1]);
-}
-
 
     bool CollisionDetector::obstacleBetween(const double* point_a, const double* point_b) {
 
