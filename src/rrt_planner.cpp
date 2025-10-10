@@ -97,13 +97,13 @@ namespace rrt_planner {
         double dir_y = point_rand[1] - point_nearest[1];
         double dist = computeDistance(point_nearest, point_rand);
 
-        if (dist < 1e-6) dist = 1e-6; // ikke dele på null
+        if (dist < 1e-6) dist = 1e-6; // Prevent division by zero
         dir_x /= dist;
         dir_y /= dist;
 
         double step = std::min(0.1, dist);
-        candidate_point_[0] = point_nearest[0] + step * dir_x;
-        candidate_point_[1] = point_nearest[1] + step * dir_y;
+        candidate_point_[0] = dir_x;
+        candidate_point_[1] = dir_y;
 
         return candidate_point_;
     }
