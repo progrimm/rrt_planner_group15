@@ -101,7 +101,7 @@ namespace rrt_planner {
         dir_x /= dist;
         dir_y /= dist;
 
-        double step = std::min(0.1, dist);
+        double step = std::min(params_.step, dist);
         candidate_point_[0] = point_nearest[0] + step * dir_x;
         candidate_point_[1] = point_nearest[1] + step * dir_y;
 
