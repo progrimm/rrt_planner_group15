@@ -20,6 +20,8 @@ namespace rrt_planner {
         // clear everything before planning
         nodes_.clear();
 
+        printf("RRT* planning started...\n");
+
         // Start Node
         createNewNode(start_, -1, 0.0);
 
