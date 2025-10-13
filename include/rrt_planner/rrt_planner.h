@@ -21,6 +21,21 @@ namespace rrt_planner {
             RRTPlanner(costmap_2d::Costmap2DROS *costmap, const rrt_params& params);
 
             /**
+             * @brief Calculate the cost from the start node to a given node
+             * @param node_id The node to calculate cost to
+             * @return The total cost from start to the node
+             */
+            double calculateNodeCost(int node_id) const;
+
+            /**
+             * @brief Calculate the cost of a path between two points
+             * @param from The starting point
+             * @param to The ending point
+             * @return The cost of the path between the points
+             */
+            double calculatePathCost(const double* from, const double* to) const;
+
+            /**
              * @brief   Plan a path using RRT
              * @return  True if found, false otherwise 
              */
@@ -43,15 +58,17 @@ namespace rrt_planner {
              * @brief Create new node
              * @param pos 2D coordinates of the new node
              * @param parent_node_id Id of the parent node of the new node
+             * @param cost_to_go Cost to go from start to the new node
              */
-            void createNewNode(const double* pos, int parent_node_id);
-
+            
+            void createNewNode(const double* pos, int parent_node_id, double cost_to_go);
             /** 
              * @brief Connect the sampled random point to nearest tree node.
              * @param start 2D coordinates of nearest existing tree node to random point
              * @param goal  2D coordinates of sampled random point
              * @return 2D coordinates of potential new tree node
              */
+
             double *extendTree(const double* point_nearest, const double* point_rand);
 
             /*********************
@@ -69,6 +86,14 @@ namespace rrt_planner {
              * @param   start The goal position
              */
             void setGoal(double *goal);
+
+            /**
+             * @brief Get all nodes within a specified radius of a point
+             * @param point Center point for the search
+             * @param radius Search radius
+             * @return Vector of node indices within the radius
+             */
+            std::vector<int> getNodesInRadius(const double* point, double radius);
 
             /**
              * @brief Get the RRT tree.

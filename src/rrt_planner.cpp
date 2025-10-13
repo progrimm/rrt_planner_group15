@@ -1,4 +1,3 @@
-
 #include <rrt_planner/rrt_planner.h>
 #include <limits>
 
@@ -22,7 +21,7 @@ namespace rrt_planner {
         nodes_.clear();
 
         // Start Node
-        createNewNode(start_, -1);
+        createNewNode(start_, -1, 0.0);
 
         double *p_rand, *p_new;
         Node nearest_node;
@@ -34,7 +33,38 @@ namespace rrt_planner {
             p_new = extendTree(nearest_node.pos, p_rand); // new point and node candidate
 
             if (!collision_dect_.obstacleBetween(nearest_node.pos, p_new)) {
-                createNewNode(p_new, nearest_node.node_id);
+                
+                // Find nodes within radius
+                std::vector<int> X_near = getNodesInRadius(p_new, params_.radius);
+                
+                // Find optimal parent (x_min)
+                int x_min_id = nearest_node.node_id;
+                double c_min = calculateNodeCost(nearest_node.node_id) + calculatePathCost(p_new, nearest_node.pos);
+                
+                for (int x_near_id : X_near) {
+                    if (!collision_dect_.obstacleBetween(nodes_[x_near_id].pos, p_new)) {
+                        double cost_through_x_near = calculateNodeCost(x_near_id) + calculatePathCost(p_new, nodes_[x_near_id].pos);
+                        if (cost_through_x_near < c_min) {
+                            x_min_id = x_near_id;
+                            c_min = cost_through_x_near;
+                        }
+                    }
+                }
+                
+                // Create new node with optimal parent and cost
+                createNewNode(p_new, x_min_id, c_min);
+                int new_node_id = nodes_.size() - 1;
+                
+                // Rewire nearby nodes
+                for (int x_near_id : X_near) {
+                    if (!collision_dect_.obstacleBetween(nodes_[x_near_id].pos, p_new)) {
+                        double cost_through_new = calculateNodeCost(new_node_id) + calculatePathCost(p_new, nodes_[x_near_id].pos);
+                        if (cost_through_new < calculateNodeCost(x_near_id)) {
+                            nodes_[x_near_id].parent_id = new_node_id;
+                            nodes_[x_near_id].cost_to_go = cost_through_new;
+                        }
+                    }
+                }
 
             } else {
                 continue;
@@ -56,7 +86,7 @@ namespace rrt_planner {
         int min_dist_node = 0;
         double min_dist = std::numeric_limits<double>::max();
         double dist = 0.0;
-
+        
         for (int i = static_cast<int>(nodes_.size()) - 1; i >= 0; --i) {
             dist = computeDistance(nodes_[i].pos, point);
             if (dist < min_dist) {
@@ -66,10 +96,19 @@ namespace rrt_planner {
         }
 
         return min_dist_node;
-
     }
 
-    void RRTPlanner::createNewNode(const double* pos, int parent_node_id) {
+    std::vector<int> RRTPlanner::getNodesInRadius(const double* point, double radius) {
+        std::vector<int> nodes_in_radius;
+        for (int i = 0; i < nodes_.size(); ++i) {
+            if (computeDistance(nodes_[i].pos, point) <= radius) {
+                nodes_in_radius.push_back(i);
+            }
+        }
+        return nodes_in_radius;
+    }
+
+    void RRTPlanner::createNewNode(const double* pos, int parent_node_id, double cost_to_go) {
 
         Node new_node;
 
@@ -77,18 +116,31 @@ namespace rrt_planner {
         new_node.pos[1] = pos[1];
         new_node.node_id = nodes_.size();
         new_node.parent_id = parent_node_id;
+        new_node.cost_to_go = cost_to_go;
 
         nodes_.emplace_back(new_node);
-        
     }
 
     double* RRTPlanner::sampleRandomPoint() {
-
 
         rand_point_[0] = random_double_x.generate();
         rand_point_[1] = random_double_y.generate();
         
         return rand_point_;
+    }
+
+    double RRTPlanner::calculatePathCost(const double* from, const double* to) const {
+        // The cost is simply the Euclidean distance between points
+        return computeDistance(from, to);
+    }
+
+    double RRTPlanner::calculateNodeCost(int node_id) const {
+        if (node_id < 0 || node_id >= nodes_.size()) {
+            return std::numeric_limits<double>::max();
+        }
+
+        // Return the stored cost-to-go (accumulated cost from start)
+        return nodes_[node_id].cost_to_go;
     }
 
     double* RRTPlanner::extendTree(const double* point_nearest, const double* point_rand) {
