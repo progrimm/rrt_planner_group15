@@ -38,7 +38,6 @@ Toolbars:
 Visualization Manager:
   Class: ""
   Displays:
-      # existing displays...
     - Alpha: 1
       Class: rviz/PoseArray
       Enabled: true

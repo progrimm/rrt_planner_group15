@@ -18,10 +18,8 @@ namespace rrt_planner {
 
     bool RRTPlanner::planPath() {
 
-        // clear everything before planning
         nodes_.clear();
 
-        // Start Node
         createNewNode(start_, -1);
 
         double *p_rand, *p_new;
@@ -31,7 +29,7 @@ namespace rrt_planner {
 
             p_rand = sampleRandomPoint();
             nearest_node = nodes_[getNearestNodeId(p_rand)];
-            p_new = extendTree(nearest_node.pos, p_rand); // new point and node candidate
+            p_new = extendTree(nearest_node.pos, p_rand);
 
             if (!collision_dect_.obstacleBetween(nearest_node.pos, p_new)) {
                 createNewNode(p_new, nearest_node.node_id);

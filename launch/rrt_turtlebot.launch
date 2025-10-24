@@ -1,5 +1,4 @@
   <launch>
-    <!-- Arguments -->
     <arg name="model" default="waffle_pi"/>
     <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
     <arg name="move_forward_only" default="false"/>
@@ -8,22 +7,18 @@
 
     <param name="use_sim_time" value="true" />
 
-    <!-- Simulation Turtlebot3 -->
     <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch">
       <arg name="model" value="$(arg model)"/>
     </include>
 
-    <!-- Map server -->
     <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
-    <!-- AMCL -->
     <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
       <arg name="initial_pose_x" default="0.0"/>
       <arg name="initial_pose_y" default="0.0"/>
       <arg name="initial_pose_a" default="0.0"/>
     </include>
     
-    <!-- move_base -->
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
       <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
       <param name="base_global_planner" value="rrt_planner/RRTPlannerROS"/>
@@ -42,6 +37,5 @@
       <remap from="odom" to="$(arg odom_topic)"/>
     </node>
 
-    <!-- rviz -->
     <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find rrt_planner)/rviz/rrt_turtlebot_sim.rviz"/>
   </launch>
